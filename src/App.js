@@ -1,78 +1,56 @@
 import React, { Component } from 'react'
-import * as am4core from '@amcharts/amcharts4/core'
-import * as am4maps from '@amcharts/amcharts4/maps'
-import am4geodata_japanHigh from '@amcharts/amcharts4-geodata/japanHigh'
-import logo from './logo.svg'
+import {MapChart} from '@amcharts/amcharts4/core'
+import Map from './Map/Map.js'
+import VisitedList from './VisitedList/VisitedList'
+import SearchBar from './SeachBar/SearchBar'
 import './App.css'
 
 class App extends Component {
-  render() {
-    // Create map instance
-    const map = am4core.create('chartdiv', am4maps.MapChart)
-    // Set map definition
-    map.geodata = am4geodata_japanHigh
-    // Set projection
-    map.projection = new am4maps.projections.Miller()
-    let polygonSeries = new am4maps.MapPolygonSeries()
-    // Create map polygon series
-    polygonSeries.useGeodata = true
-    map.series.push(polygonSeries)
+  state = {
+    visitedPrefectures: [],
+  }
 
-    polygonSeries.data = [
-      {
-        'id': 'JP-16',
-        'name': 'Toyama',
-        'jp_name': '富山',
-        'trip': 'Dec 18',
+  handleSelect = (e) => {
+      console.log('Target', e.target.dataItem.dataContext)
+      console.log('state', this.state)
+      const {id, name, jp_name} = e.target.dataItem.dataContext
+      if(e.target.isActive) {
+        const filterList = this.state.visitedPrefectures.filter((prefecture) => {
+          return prefecture.id !== id
+        })
+        this.setState({
+          visitedPrefectures: [...filterList]
+        })
+      } else {
+        this.setState({
+          visitedPrefectures: [...this.state.visitedPrefectures, { id, name, jp_name } ]
+        })
       }
-    ]
+      e.target.isActive = !e.target.isActive
+  }
 
-    // Configure series
-    const polygonTemplate = polygonSeries.mapPolygons.template
-    polygonTemplate.tooltipText = '{name} ({jp_name} - {trip})'
-    polygonTemplate.fill = am4core.color('#74B266')
-
-    /* Create a gentle shadow for columns */
-    console.log(polygonSeries)
-
-    // Create default state
-    const defaultState = polygonTemplate.states.create("default")
-    const shadow = defaultState.filters.push(new am4core.DropShadowFilter)
-    shadow.opacity = 0.0
-
-    // Create hover state and set alternative fill color
-    const hs = polygonTemplate.states.create('hover')
-    hs.properties.fill = am4core.color('#367B25')
-    let hoverShadow = hs.filters.push(new am4core.DropShadowFilter)
-    hoverShadow.dx = 6
-    hoverShadow.dy = 6
-    hoverShadow.opacity = 0.3
-
-    // Create active state
-    const activeState = polygonTemplate.states.create("active")
-    activeState.properties.fill = map.colors.getIndex(3).brighten(-0.5)
-
-    // Create an event to toggle "active" state
-    polygonTemplate.events.on("hit", function(ev) {
-      ev.target.isActive = !ev.target.isActive
-    })
+  render() {
 
     return (
       <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className='App-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Learn React
-          </a>
-        </header>
+        <div className='map-wrapper'>
+          <div style={{flex:3}}>
+            <Map
+              onClick={this.handleSelect}
+              setMapReference={this.setMapReference}
+              visitedPrefectures={this.state.visitedPrefectures}
+            />
+          </div>
+          <div style={{flex:1, marginTop: 12}}>
+            <SearchBar />
+            <VisitedList
+              visitedLocations={this.state.visitedPrefectures}
+              listTitle='Visited Prefectures'
+            />
+          </div>
+
+        </div>
+
       </div>
     )
   }

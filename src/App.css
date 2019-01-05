@@ -22,9 +22,8 @@
   color: #61dafb;
 }
 
-#chartdiv {
-  padding-top: 24px;
-  height: 100vh;
+.map-wrapper {
+  display: flex;
 }
 
 @keyframes App-logo-spin {
