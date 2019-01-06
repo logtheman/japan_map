@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import * as am4core from '@amcharts/amcharts4/core'
 import * as am4maps from '@amcharts/amcharts4/maps'
 import am4geodata_japanHigh from '@amcharts/amcharts4-geodata/japanHigh'
+import data from './dataMapping'
 import './Map.css'
 
 class Map extends Component {
@@ -17,18 +18,11 @@ class Map extends Component {
     polygonSeries.useGeodata = true
     map.series.push(polygonSeries)
 
-    polygonSeries.data = [
-      {
-        'id': 'JP-16',
-        'name': 'Toyama',
-        'jp_name': '富山',
-        'trip': 'Dec 18',
-      }
-    ]
+    this.insertNewDataProperties(polygonSeries)
 
     // Configure series
     const polygonTemplate = polygonSeries.mapPolygons.template
-    polygonTemplate.tooltipText = '{name} ({jp_name})'
+    polygonTemplate.tooltipText = '{name} ({kanji})'
     polygonTemplate.fill = am4core.color('#74B266')
 
     /* Create a gentle shadow for columns */
@@ -54,6 +48,11 @@ class Map extends Component {
     // Create an event to toggle "active" state
     console.log(this)
     polygonTemplate.events.on("hit", this.props.onClick)
+  }
+
+  insertNewDataProperties = (polygonSeries) => {
+    const newData = data.map(item => item.properties)
+    polygonSeries.data = newData
   }
 
   render() {

@@ -13,7 +13,7 @@ class App extends Component {
   handleSelect = (e) => {
       console.log('Target', e.target.dataItem.dataContext)
       console.log('state', this.state)
-      const {id, name, jp_name} = e.target.dataItem.dataContext
+      const {id, name, kanji} = e.target.dataItem.dataContext
       if(e.target.isActive) {
         const filterList = this.state.visitedPrefectures.filter((prefecture) => {
           return prefecture.id !== id
@@ -23,7 +23,7 @@ class App extends Component {
         })
       } else {
         this.setState({
-          visitedPrefectures: [...this.state.visitedPrefectures, { id, name, jp_name } ]
+          visitedPrefectures: [...this.state.visitedPrefectures, { id, name, kanji } ]
         })
       }
       e.target.isActive = !e.target.isActive

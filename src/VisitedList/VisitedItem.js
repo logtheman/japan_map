@@ -1,8 +1,8 @@
 import React from 'react'
 
-function VisitItem({name, jp_name}) {
+function VisitItem({name, kanji}) {
   return (
-    <div>{`${name} (${jp_name})`}</div>
+    <div>{`${name} (${kanji})`}</div>
   )
 }
 
