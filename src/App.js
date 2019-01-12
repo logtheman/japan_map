@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import {MapChart, color} from '@amcharts/amcharts4/core'
-import * as am4core from '@amcharts/amcharts4/core'
-
 import Map from './Map/Map.js'
 import {findPropertiesByName} from './Map/dataMapping'
 import VisitedList from './VisitedList/VisitedList'
@@ -24,11 +21,8 @@ class App extends Component {
       const {id, name, kanji} = e.target.dataItem.dataContext
       console.log(e.target)
       if(e.target.isActive) {
-        const filterList = this.state.visitedPrefectures.filter((prefecture) => {
-          return prefecture.id !== id
-        })
         this.setState({
-          visitedPrefectures: [...filterList]
+          visitedPrefectures: [...this.filterIdFromVisited(id)]
         })
       } else {
         this.setState({
@@ -43,12 +37,16 @@ class App extends Component {
     const mapData = findPropertiesByName(prefectureName)
     if (!mapData) return
     const {id, name, kanji} = mapData
-    console.log('mapData', mapData)
     const selectedItem = this.state.polygonSeries.mapPolygons._values.filter(item => item.dataItem.dataContext.name === name)
+    console.log('mapData', mapData)
     selectedItem[0].setState('active')
     this.setState({
-      visitedPrefectures: [...this.state.visitedPrefectures, { id, name, kanji } ]
+      visitedPrefectures: [...this.filterIdFromVisited(id), { id, name, kanji } ]
     })
+  }
+
+  filterIdFromVisited = (id) => {
+    return this.state.visitedPrefectures.filter((prefecture) => prefecture.id !== id)
   }
 
   render() {
