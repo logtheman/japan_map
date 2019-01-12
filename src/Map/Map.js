@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import * as am4core from '@amcharts/amcharts4/core'
 import * as am4maps from '@amcharts/amcharts4/maps'
 import am4geodata_japanHigh from '@amcharts/amcharts4-geodata/japanHigh'
-import data from './dataMapping'
+import {mapData} from './dataMapping'
 import './Map.css'
 
 class Map extends Component {
@@ -30,28 +30,29 @@ class Map extends Component {
 
     // Create default state
     const defaultState = polygonTemplate.states.create("default")
-    const shadow = defaultState.filters.push(new am4core.DropShadowFilter)
+    const shadow = defaultState.filters.push(new am4core.DropShadowFilter())
     shadow.opacity = 0.0
 
     // Create hover state and set alternative fill color
     const hs = polygonTemplate.states.create('hover')
     hs.properties.fill = am4core.color('#367B25')
-    let hoverShadow = hs.filters.push(new am4core.DropShadowFilter)
+    let hoverShadow = hs.filters.push(new am4core.DropShadowFilter())
     hoverShadow.dx = 3
     hoverShadow.dy = 3
     hoverShadow.opacity = 0.3
+    polygonTemplate.propertyFields.fill = "fill"
 
     // Create active state
     const activeState = polygonTemplate.states.create("active")
-    activeState.properties.fill = map.colors.getIndex(3).brighten(-0.5)
+    activeState.properties.fill = am4core.color('#3F51B5')
 
     // Create an event to toggle "active" state
-    console.log(this)
     polygonTemplate.events.on("hit", this.props.onClick)
+    this.props.setMapReferences({mapRef: map, polygonSeries, polygonTemplate})
   }
 
   insertNewDataProperties = (polygonSeries) => {
-    const newData = data.map(item => item.properties)
+    const newData = mapData.map(item => item.properties)
     polygonSeries.data = newData
   }
 
