@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import Map from './Map/Map.js'
 import {findPropertiesByName} from './Map/dataMapping'
-import VisitedList from './VisitedList/VisitedList'
+import {VisitedLocationList, VisitedPrefectureList} from './VisitedList'
 import SearchBar from './SeachBar/SearchBar'
 import './App.css'
 
 class App extends Component {
   state = {
     visitedPrefectures: [],
+    visitedLocations: [],
     mapRef: undefined,
     polygonSeries: undefined,
     polygonTemplate: undefined,
@@ -32,7 +33,7 @@ class App extends Component {
       e.target.isActive = !e.target.isActive
   }
 
-  handleSelectLocation = (prefectureName) => {
+  handleSelectLocation = (prefectureName, geoSuggest) => {
     if (!prefectureName) return
     const mapData = findPropertiesByName(prefectureName)
     if (!mapData) return
@@ -41,12 +42,17 @@ class App extends Component {
     console.log('mapData', mapData)
     selectedItem[0].setState('active')
     this.setState({
-      visitedPrefectures: [...this.filterIdFromVisited(id), { id, name, kanji } ]
+      visitedPrefectures: [...this.filterIdFromVisited(id), { id, name, kanji } ],
+      visitedLocations: [...this.filterIdFromVisitedLocation(geoSuggest.placeId), geoSuggest],
     })
   }
 
   filterIdFromVisited = (id) => {
     return this.state.visitedPrefectures.filter((prefecture) => prefecture.id !== id)
+  }
+
+  filterIdFromVisitedLocation = (id) => {
+    return this.state.visitedLocations.filter((location) => location.placeId !== id)
   }
 
   render() {
@@ -65,9 +71,13 @@ class App extends Component {
             <SearchBar 
               onSelect={this.handleSelectLocation}
             />
-            <VisitedList
-              visitedLocations={this.state.visitedPrefectures}
+            <VisitedPrefectureList
+              listItems={this.state.visitedPrefectures}
               listTitle='Visited Prefectures'
+            />
+            <VisitedLocationList
+              listItems={this.state.visitedLocations}
+              listTitle='Visited Locations'
             />
           </div>
 

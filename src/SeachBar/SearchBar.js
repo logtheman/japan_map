@@ -15,7 +15,7 @@ class SearchInput extends PureComponent {
     })
     if (result.length === 0) return
     this._geoSuggest.clear()
-    this.props.onSelect(result[0].short_name)
+    this.props.onSelect(result[0].short_name, suggest)
   }
 
   parsePrefecture = (shortName => {
