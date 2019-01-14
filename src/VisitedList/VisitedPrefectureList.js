@@ -6,7 +6,7 @@ function VisitedPrefectureList({listItems, listTitle}) {
   if(visitedPrefectureList.length < 1) return (<div/>)
   return (
     <div>
-      <h2>{listTitle}</h2>
+      <h2>{`${listTitle} (${visitedPrefectureList.length}/47)`}</h2>
       {visitedPrefectureList}
     </div>
   )

@@ -3,6 +3,7 @@ import Map from './Map/Map.js'
 import {findPropertiesByName} from './Map/dataMapping'
 import {VisitedLocationList, VisitedPrefectureList} from './VisitedList'
 import SearchBar from './SeachBar/SearchBar'
+import visitedData from './visitedData'
 import './App.css'
 
 class App extends Component {
@@ -16,6 +17,18 @@ class App extends Component {
 
   setMapReferences = ({mapRef, polygonSeries, polygonTemplate}) => {
     this.setState({mapRef, polygonSeries, polygonTemplate})
+    setTimeout(() => this.setInitialData(polygonSeries), 100);
+  }
+
+  setInitialData = (polygonSeries) => {
+    polygonSeries.mapPolygons.values.forEach(item => {
+      if (visitedData.filter(data => data.name === item.dataItem.dataContext.name).length > 0) {
+        item.setState('active')
+      }
+    })
+    this.setState({
+      visitedPrefectures: visitedData
+    })
   }
 
   handleSelectPrefecture = (e) => {
